@@ -1,0 +1,14 @@
+services:
+  jules:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    cgroup: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ~/.divmora:/root/.divmora
+      - ./workspace:/workspace
+    # The base image uses systemd (/sbin/init) as its entrypoint,
+    # so we don't need to specify a command here.
+    # It will run in the background as a full workspace environment.

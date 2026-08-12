@@ -1,0 +1,17 @@
+# Environments
+.env
+
+# Go workspace
+workspace/
+
+# Go artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Subdirectories
+.jules/
