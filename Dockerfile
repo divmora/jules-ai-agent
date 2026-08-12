@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------
 # Stage 1: Build Jules and Localharness
 # ---------------------------------------------------------------------------
-FROM public.ecr.aws/docker/library/golang:1.25-bookworm AS builder
+FROM golang:1.25-bookworm AS builder
 
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /jules .
 # Base: Ubuntu 24.04 LTS (Noble Numbat)
 # ============================================================================
 
-FROM public.ecr.aws/docker/library/ubuntu:24.04
+FROM ubuntu:24.04
 
 # OCI Image Labels
 ARG BUILD_DATE
@@ -152,8 +152,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ---------------------------------------------------------------------------
 # 5. Go (latest 1.26.x)
 # ---------------------------------------------------------------------------
+ARG TARGETARCH
 ARG GO_VERSION="1.26.2"
-RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" \
     -o /tmp/go.tar.gz \
     && tar -C /usr/local -xzf /tmp/go.tar.gz \
     && rm /tmp/go.tar.gz \
@@ -163,7 +164,8 @@ RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
 # 6. CLI tools (yq)
 # ---------------------------------------------------------------------------
 # Using wget here instead of curl for simpler GitHub release redirect handling.
-RUN wget -q "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" \
+ARG TARGETARCH
+RUN wget -q "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${TARGETARCH}" \
     -O /usr/local/bin/yq \
     && chmod +x /usr/local/bin/yq \
     && yq --version
