@@ -1,6 +1,6 @@
-# Zenith Agents
+# Jules Agents
 
-Zenith includes three specialized AI agents, each with a distinct identity, philosophy, and focus area. 
+Jules includes three specialized AI agents, each with a distinct identity, philosophy, and focus area. 
 
 ## Sentinel 🛡️ (Security)
 **Mission**: Identify and fix security vulnerabilities or add security enhancements.  
@@ -21,7 +21,7 @@ Zenith includes three specialized AI agents, each with a distinct identity, phil
 
 ## Agentic Architecture
 
-The Zenith agents employ several advanced patterns from autonomous agent standards to improve task success rates and observability.
+The Jules agents employ several advanced patterns from autonomous agent standards to improve task success rates and observability.
 
 ### 1. Persistent Memory & Reflection (Journals)
 To prevent repeating mistakes, each agent maintains a long-term memory journal inside the `.jules/` directory of the target workspace (e.g., `.jules/bolt.md`).
@@ -33,10 +33,9 @@ To handle large codebases without overwhelming their primary context windows, ag
 - **`a11y-auditor`**: Used by Palette to thoroughly scan UI components for WCAG violations.
 - **`perf-researcher`**: Used by Bolt to investigate suspected performance bottlenecks.
 
-### 3. Automated Jira Workflow
+### 3. Automated Git Workflow
 All agents follow a strict deterministic Plan-and-Solve workflow:
 1. **Analyze**: The agent reviews the workspace based on its specific guidelines and selects the highest priority issue it can solve cleanly in less than 50 lines.
-2. **Create Ticket**: The agent automatically calls the built-in Jira service to create a task summarizing the issue, ensuring project managers are kept in the loop.
-3. **Branch**: The agent creates a new git branch utilizing the returned Jira Ticket ID (e.g., `git checkout -b PROJ-123`).
-4. **Implement**: The agent writes the code and performs any necessary testing and linting.
-5. **Update Ticket & PR**: The agent updates the Jira ticket description with final implementation details before pushing the branch and opening a Pull Request.
+2. **Branch**: The agent creates a new descriptive git branch (e.g., `git checkout -b perf/bolt-optimize-loops`).
+3. **Implement**: The agent writes the code and performs any necessary testing and linting.
+4. **Pull Request**: The agent pushes the branch and opens a Pull Request with a detailed summary of the implemented changes.

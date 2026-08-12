@@ -1,25 +1,39 @@
 # Jules AI Agents
 
-Jules is a suite of specialized AI code review agents powered by `github.com/divmora/localharness`. The agents autonomously analyze your workspace to find performance, design, or security issues, implement the changes on a new branch, and prepare the final updates.
+Jules is a suite of specialized AI code review agents powered by `github.com/divmora/localharness`. The agents autonomously analyze your workspace to find performance, design, or security issues, implement the changes on a new descriptive branch, and prepare the final pull requests.
 
-## Setup
+## How to Use
 
-1. Build and run the Jules workspace using Docker Compose:
-   ```bash
-   docker compose up -d --build
-   ```
+Jules can be run natively on your machine or inside an isolated Docker environment. API keys and context should be provided directly via user prompts or through MCP tool configurations.
 
-## Running an Agent
+### 1. Running Locally (Native)
 
-You can execute agents inside the running container. For example, to run Bolt against an `fms` workspace:
+If you have Go 1.25+ installed, you can build and run Jules directly on your local codebase:
 
 ```bash
-docker compose exec jules bash -c "jules --agent bolt --workspace /workspace/fms --prompt 'Analyze the codebase for performance issues'"
+# Build the agent
+make build
+
+# Run the agent against a local workspace
+./jules-ai-agent --agent bolt --workspace /path/to/your/project --prompt "Analyze the codebase for performance issues and fix them."
 ```
 
-### Available Agents:
-- **Bolt** (Performance optimization)
-- **Palette** (Design and UX improvements)
-- **Sentinel** (Security vulnerability fixes)
+### 2. Running via Docker (Isolated)
 
-See `.agents/AGENTS.md` for more details on each agent's capabilities and workflows.
+For an isolated environment with pre-installed toolchains (Node.js, Python, Go, PHP, etc.), use the provided Docker setup:
+
+```bash
+# Build and run the Jules workspace
+docker compose up -d --build
+
+# Execute an agent inside the running container
+docker compose exec jules bash -c "jules --agent sentinel --workspace /workspace/fms --prompt 'Audit for security vulnerabilities'"
+```
+
+## Available Agents
+
+- **Bolt ⚡** (Performance optimization)
+- **Palette 🎨** (Design and UX improvements)
+- **Sentinel 🛡️** (Security vulnerability fixes)
+
+For detailed capabilities, agent philosophies, and their specific Git workflows, see [`.agents/AGENTS.md`](.agents/AGENTS.md).
