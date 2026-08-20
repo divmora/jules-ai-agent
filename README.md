@@ -1,5 +1,7 @@
 # Jules AI Agents
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/divmora/jules-ai-agent)
+
 Jules is a suite of specialized AI code review agents powered by `github.com/divmora/localharness`. The agents autonomously analyze your workspace to find performance, design, or security issues, implement the changes on a new descriptive branch, and prepare the final pull requests.
 
 ## How to Use
