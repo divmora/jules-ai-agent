@@ -38,6 +38,8 @@ jobs:
             goarch: amd64
           - goos: darwin
             goarch: arm64
+          - goos: windows
+            goarch: amd64
     steps:
       - uses: actions/checkout@v5
 
@@ -54,10 +56,13 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
         run: |
-          VERSION="${{ needs.release-please.outputs.version }}"
+          EXT=""
+          if [ "${GOOS}" = "windows" ]; then
+            EXT=".exe"
+          fi
           go build -trimpath \
             -ldflags="-s -w" \
-            -o jules-ai-agent-${GOOS}-${GOARCH} \
+            -o "jules-ai-agent-${GOOS}-${GOARCH}${EXT}" \
             .
 
       - name: Package
@@ -67,9 +72,13 @@ jobs:
         run: |
           VERSION="${{ needs.release-please.outputs.version }}"
           ARCHIVE="jules-ai-agent-${VERSION}-${GOOS}-${GOARCH}.tar.gz"
+          EXT=""
+          if [ "${GOOS}" = "windows" ]; then
+            EXT=".exe"
+          fi
 
-          mv jules-ai-agent-${GOOS}-${GOARCH} jules-ai-agent
-          tar czf "${ARCHIVE}" jules-ai-agent
+          mv "jules-ai-agent-${GOOS}-${GOARCH}${EXT}" "jules-ai-agent${EXT}"
+          tar czf "${ARCHIVE}" "jules-ai-agent${EXT}"
           sha256sum "${ARCHIVE}" > "${ARCHIVE}.sha256"
 
       - name: Upload to release

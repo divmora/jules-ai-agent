@@ -37,6 +37,8 @@ jobs:
             goarch: amd64
           - goos: darwin
             goarch: arm64
+          - goos: windows
+            goarch: amd64
     steps:
       - uses: actions/checkout@v5
 
@@ -50,8 +52,12 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
         run: |
+          EXT=""
+          if [ "${GOOS}" = "windows" ]; then
+            EXT=".exe"
+          fi
           go build -trimpath -ldflags="-s -w" \
-            -o bin/jules-ai-agent-${GOOS}-${GOARCH} \
+            -o "bin/jules-ai-agent-${GOOS}-${GOARCH}${EXT}" \
             .
 
       - name: Upload build artifacts

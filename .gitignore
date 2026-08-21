@@ -12,6 +12,8 @@ workspace/
 *.dylib
 *.test
 *.out
+/bin/
+/jules-ai-agent
 
 # Subdirectories
 .jules/

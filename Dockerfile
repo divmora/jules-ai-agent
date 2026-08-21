@@ -1,16 +1,22 @@
 # ---------------------------------------------------------------------------
 # Stage 1: Build Jules and Localharness
 # ---------------------------------------------------------------------------
-FROM golang:1.25-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
 
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-RUN GOPROXY=direct CGO_ENABLED=0 GOOS=linux go install github.com/divmora/localharness/cmd/localharness@main
+RUN git clone --depth 1 --branch v2.0.0 https://github.com/divmora/localharness.git /tmp/localharness \
+    && cd /tmp/localharness \
+    && CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /go/bin/localharness ./cmd/localharness \
+    && rm -rf /tmp/localharness
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /jules .
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /jules .
 
 # ============================================================================
 # Jules Workspace Images — Ubuntu Noble + systemd + Docker
