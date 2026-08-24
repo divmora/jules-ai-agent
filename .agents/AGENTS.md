@@ -25,7 +25,9 @@ The Jules agents employ several advanced patterns from autonomous agent standard
 
 ### 1. Persistent Memory & Reflection (Journals)
 To prevent repeating mistakes, each agent maintains a long-term memory journal inside the `.jules/` directory of the target workspace (e.g., `.jules/bolt.md`).
-Before initiating any work, the agent must read its respective journal. Before creating the git commit for a task, if the agent uncovered a unique pattern or made a critical mistake, it appends a post-mortem reflection to the journal so that the journal update is included in the same commit.
+- **Read First**: Before initiating any work, the agent must check and read its respective journal if it exists.
+- **Conditional Reflection**: Modification of the journal is optional and only performed if the agent uncovered a critical codebase-specific pattern, surprising pitfall, or valuable insight. If no unique reflection is needed, the journal is not touched.
+- **Atomic Commit**: All code changes and journal updates (if any) are committed together in a single commit at the end of the task.
 
 ### 2. Hierarchical Subagents (Delegation)
 To handle large codebases without overwhelming their primary context windows, agents can spawn read-only subagents:
@@ -35,7 +37,10 @@ To handle large codebases without overwhelming their primary context windows, ag
 
 ### 3. Automated Git Workflow
 All agents follow a strict deterministic Plan-and-Solve workflow:
-1. **Analyze**: The agent reviews the workspace based on its specific guidelines and selects the highest priority issue it can solve cleanly in less than 50 lines.
+1. **Analyze**: The agent checks the journal (if present), reviews the workspace based on its specific guidelines, and selects the highest priority issue it can solve cleanly in less than 50 lines.
 2. **Branch**: The agent creates a new descriptive git branch (e.g., `git checkout -b perf/bolt-optimize-loops`).
-3. **Implement**: The agent writes the code and performs any necessary testing and linting.
-4. **Pull Request**: The agent pushes the branch and opens a Pull Request with a detailed summary of the implemented changes.
+3. **Implement**: The agent writes the code changes.
+4. **Verify**: The agent runs lint and test suites to verify functionality and ensure no regressions.
+5. **Reflect (Conditional)**: If a critical learning or novel pattern was discovered, the agent appends it to `.jules/<agent>.md`. If no unique insight was learned, this step is skipped.
+6. **Commit Once**: Once all code and reflection steps are fully completed, the agent stages all modified files (including the journal if updated) and creates a single git commit.
+7. **Pull Request**: The agent pushes the branch and opens a Pull Request with a detailed summary of the implemented changes.
