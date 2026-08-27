@@ -8,6 +8,7 @@
 //   - Bolt ⚡  — performance issues (see [NewBoltConfig])
 //   - Palette 🎨 — design issues (see [NewPaletteConfig])
 //   - Sentinel 🛡️ — security issues (see [NewSentinelConfig])
+//   - Sweeper 🧹 — maintainability issues (see [NewSweeperConfig])
 package agents
 
 import (

@@ -8,6 +8,7 @@
 //	go run . --agent bolt     --workspace ./myproject --prompt "Analyse the codebase for performance issues"
 //	go run . --agent palette  --workspace ./myproject --prompt "Review the architecture"
 //	go run . --agent sentinel --workspace ./myproject --prompt "Audit for security vulnerabilities"
+//	go run . --agent sweeper  --workspace ./myproject --prompt "Clean up technical debt and code smells"
 package main
 
 import (
@@ -24,7 +25,7 @@ import (
 )
 
 func main() {
-	agentName := flag.String("agent", "", "Agent to run: bolt (performance), palette (design), sentinel (security)")
+	agentName := flag.String("agent", "", "Agent to run: bolt (performance), palette (design), sentinel (security), sweeper (maintainability)")
 	workspace := flag.String("workspace", ".", "Workspace directory to analyse")
 	prompt := flag.String("prompt", "", "Prompt to send to the agent")
 	verbose := flag.Bool("verbose", false, "Enable verbose/debug logging from the agent")
@@ -33,7 +34,7 @@ func main() {
 	// --- Validate inputs ---
 
 	if *agentName == "" {
-		fmt.Fprintln(os.Stderr, "Error: --agent is required (bolt, palette, sentinel)")
+		fmt.Fprintln(os.Stderr, "Error: --agent is required (bolt, palette, sentinel, sweeper)")
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -66,8 +67,11 @@ func main() {
 	case "sentinel":
 		cfg = agents.NewSentinelConfig(absWorkspace)
 		fmt.Println("🛡️  Starting Sentinel — Security Agent")
+	case "sweeper":
+		cfg = agents.NewSweeperConfig(absWorkspace)
+		fmt.Println("🧹 Starting Sweeper — Maintainability Agent")
 	default:
-		fmt.Fprintf(os.Stderr, "Error: unknown agent %q (valid: bolt, palette, sentinel)\n", *agentName)
+		fmt.Fprintf(os.Stderr, "Error: unknown agent %q (valid: bolt, palette, sentinel, sweeper)\n", *agentName)
 		os.Exit(1)
 	}
 

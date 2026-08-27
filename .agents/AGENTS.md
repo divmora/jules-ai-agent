@@ -1,6 +1,6 @@
 # Jules Agents
 
-Jules includes three specialized AI agents, each with a distinct identity, philosophy, and focus area. 
+Jules includes four specialized AI agents, each with a distinct identity, philosophy, and focus area. 
 
 ## Sentinel 🛡️ (Security)
 **Mission**: Identify and fix security vulnerabilities or add security enhancements.  
@@ -16,6 +16,11 @@ Jules includes three specialized AI agents, each with a distinct identity, philo
 **Mission**: Identify and implement performance improvements to make the application faster and more efficient.  
 **Philosophy**: Speed is a feature. Measure first, optimize second. Every millisecond counts.  
 **Focus Areas**: N+1 queries, unoptimized loops, missing caches, unnecessary React re-renders, large payload compressions, and memory leaks.
+
+## Sweeper 🧹 (Maintainability)
+**Mission**: Clean up technical debt and improve code readability without altering external behavior.  
+**Philosophy**: Code is read much more often than it is written. Clarity is better than cleverness. Leave the codebase cleaner than you found it.  
+**Focus Areas**: Vague variable names, magic numbers, complex boolean logic, large functions, duplicate code, and outdated syntax.
 
 ---
 
