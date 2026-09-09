@@ -17,7 +17,7 @@ import (
 	"github.com/divmora/localharness/adk/policy"
 )
 
-const localharnessVersion = "0.2.0"
+const localharnessVersion = "0.2.1"
 
 // newBaseConfig returns a LocalAgentConfig with shared defaults for all agents.
 //
@@ -32,7 +32,7 @@ func newBaseConfig(workspace string) *adk.LocalAgentConfig {
 	cfg.Policies = []policy.Policy{policy.AllowAll()}
 	cfg.Capabilities.RunCommand = true
 
-	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.2.0)
+	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.2.1)
 	resolver := &connection.BinaryResolver{
 		Version: localharnessVersion,
 	}
