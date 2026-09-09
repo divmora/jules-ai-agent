@@ -1,0 +1,9 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "go",
+      "package-name": "jules-ai-agent",
+      "include-component-in-tag": false
+    }
+  }
+}
