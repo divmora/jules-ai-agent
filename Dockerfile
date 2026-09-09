@@ -29,7 +29,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /jule
 # Base: Ubuntu 24.04 LTS (Noble Numbat)
 # ============================================================================
 
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 # OCI Image Labels
 ARG BUILD_DATE
