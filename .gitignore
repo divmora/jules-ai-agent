@@ -1,0 +1,21 @@
+# Environments
+.env
+
+# Go workspace
+workspace/
+
+# Go artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/jules-ai-agent
+/dist/
+coverage.out
+
+# Subdirectories
+.jules/
