@@ -1,5 +1,5 @@
-github.com/divmora/localharness v0.2.1 h1:uO7kyUTxq7mYbiZOG+Y+lDSuyLIRHWBe/0zD2jfZ2GM=
-github.com/divmora/localharness v0.2.1/go.mod h1:ea5xJaA4R3U5OzIyFMM6pfr3yxWBNcnOVqbrZJXzNGQ=
+github.com/divmora/localharness v0.4.0 h1:ykn9VhL/xCq7A+pbkD1IhDQ4/lJnaI3Cb8bXlPIf2oQ=
+github.com/divmora/localharness v0.4.0/go.mod h1:TaqqtHD/zfFLnSGDN/cynocR/1u/jmrWMBi6jqcGhQg=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=

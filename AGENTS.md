@@ -116,7 +116,7 @@ The agent pushes the branch and creates a Pull Request with a clear summary:
 - **Language & Runtime**: Go 1.25+, standard library idioms.
 - **Structured Logging**: Use `log/slog` or structured standard output. Avoid raw unstructured prints for errors.
 - **Error Handling**: Wrap errors with context using `fmt.Errorf("operation failed: %w", err)`.
-- **LocalHarness Integration**: Always reference `localharnessVersion = "0.2.1"` in `agents/agents.go`.
+- **LocalHarness Integration**: Always reference `localharnessVersion = "0.4.0"` in `agents/agents.go`.
 - **Verification Commands**: Before committing changes to this repository, always run:
   ```bash
   make fmt && make lint && make test && make build
