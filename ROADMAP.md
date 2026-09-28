@@ -34,3 +34,6 @@ This document serves as the **living product roadmap** for Jules AI Agent.
   - Allow configuring max diff lines (default 50 lines) via CLI flag `--max-diff-lines`.
 - [ ] **Structured SARIF Output Export**
   - Emit findings in standard SARIF format for ingestion into GitHub Security or GitLab Vulnerability Reports.
+- [ ] **Google AX Pre-Warmed Snapshot Templates**
+  - Provide pre-checkpointed CRIU snapshot templates for instant sub-second cold starts under Google AX and Agent Substrate.
+

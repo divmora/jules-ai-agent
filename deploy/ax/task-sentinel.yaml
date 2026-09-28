@@ -1,0 +1,24 @@
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: jules-sentinel-audit
+spec:
+  image: ghcr.io/divmora/jules-ai-agent-ax:latest
+  command:
+    - jules
+    - --agent
+    - sentinel
+    - --workspace
+    - /workspace
+    - --prompt
+    - "Audit the workspace for high-severity security vulnerabilities and patch them"
+  workspaces:
+    - name: target-workspace
+      path: /workspace
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "4"
+      memory: "8Gi"

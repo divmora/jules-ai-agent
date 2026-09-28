@@ -19,7 +19,10 @@ jules-ai-agent/
 │   ├── clone-repo.sh             # Workspace Git clone utility
 │   ├── environment-summary.sh    # Container toolchain sanity and version reporter
 │   └── git-askpass.sh            # Git authentication helper
+├── deploy/                       # Orchestrator deployments and declarative manifests
+│   └── ax/                       # Google AX (Agent Executor) Task & Workspace manifests
 ├── Dockerfile                    # Multi-stage Ubuntu Noble container with complete developer toolchains
+├── Dockerfile.ax                 # Google AX task runner container with ax-task-runner as PID 1
 ├── docker-compose.yml            # Local container runner
 ├── Makefile                      # Standardized build and test targets
 ├── .release-please-config.json   # Release Please configuration

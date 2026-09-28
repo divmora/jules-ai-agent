@@ -1,11 +1,13 @@
 .PHONY: build run test test-coverage dev-setup fmt lint clean \
 	build-all build-linux-amd64 build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-amd64 \
-	docker-build docker-build-multiarch docker-build-push
+	docker-build docker-build-multiarch docker-build-push \
+	docker-build-ax docker-build-ax-multiarch docker-build-ax-push
 
 # Configuration
 BINARY_NAME ?= jules-ai-agent
 BIN_DIR ?= bin
 DOCKER_IMAGE ?= ghcr.io/divmora/jules-ai-agent:latest
+DOCKER_AX_IMAGE ?= ghcr.io/divmora/jules-ai-agent-ax:latest
 PLATFORMS ?= linux/amd64,linux/arm64
 GO_LDFLAGS ?= -s -w
 
@@ -65,6 +67,16 @@ docker-build-multiarch:
 
 docker-build-push:
 	docker buildx build --platform $(PLATFORMS) -t $(DOCKER_IMAGE) --push .
+
+# Google AX Docker Builds
+docker-build-ax:
+	docker build -f Dockerfile.ax -t $(DOCKER_AX_IMAGE) .
+
+docker-build-ax-multiarch:
+	docker buildx build --platform $(PLATFORMS) -f Dockerfile.ax -t $(DOCKER_AX_IMAGE) .
+
+docker-build-ax-push:
+	docker buildx build --platform $(PLATFORMS) -f Dockerfile.ax -t $(DOCKER_AX_IMAGE) --push .
 
 clean:
 	rm -rf $(BINARY_NAME) $(BIN_DIR) coverage.out dist/

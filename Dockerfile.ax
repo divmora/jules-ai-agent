@@ -1,0 +1,153 @@
+# ---------------------------------------------------------------------------
+# Stage 1: Build Jules, Localharness, and Google AX binaries
+# ---------------------------------------------------------------------------
+FROM --platform=$BUILDPLATFORM golang:1.26-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+
+# Enable automatic Go toolchain resolution for newer modules
+ENV GOTOOLCHAIN=auto
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Build localharness CLI
+RUN git clone --depth 1 --branch v0.4.0 https://github.com/divmora/localharness.git /tmp/localharness \
+    && cd /tmp/localharness \
+    && CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /go/bin/localharness ./cmd/localharness \
+    && rm -rf /tmp/localharness
+
+# Build Google AX (ax-task-runner and ax CLI)
+RUN git clone --depth 1 --branch v0.3.1 https://github.com/google/ax.git /tmp/ax \
+    && cd /tmp/ax \
+    && CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /go/bin/ax-task-runner ./cmd/ax-task-runner \
+    && CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /go/bin/ax ./cmd/ax \
+    && rm -rf /tmp/ax
+
+# Build Jules AI Agent
+COPY . .
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -o /jules .
+
+# ============================================================================
+# Stage 2: Jules AX Task Runner Image
+# ----------------------------------------------------------------------------
+# Autonomous AI agent runtime container for Google AX (Agent Executor).
+# Runs ax-task-runner as PID 1 to supervise execution, manage sandboxed
+# workspaces, serve metadata endpoints, and execute Jules personas.
+#
+# Base: Ubuntu 24.04 LTS (Noble Numbat)
+# ============================================================================
+
+FROM ubuntu:24.04
+
+# OCI Image Labels
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION="dev"
+
+LABEL org.opencontainers.image.title="jules-ai-agent-ax" \
+    org.opencontainers.image.description="Google AX task runner image for Jules autonomous AI coding agents" \
+    org.opencontainers.image.version="${VERSION}" \
+    org.opencontainers.image.created="${BUILD_DATE}" \
+    org.opencontainers.image.revision="${VCS_REF}" \
+    org.opencontainers.image.source="https://github.com/divmora/jules-ai-agent" \
+    org.opencontainers.image.vendor="Zenith" \
+    org.opencontainers.image.base.name="ubuntu:24.04"
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ---------------------------------------------------------------------------
+# 1. System packages, locales & developer utilities
+# ---------------------------------------------------------------------------
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    locales \
+    ca-certificates \
+    curl \
+    wget \
+    tar \
+    gzip \
+    git \
+    procps \
+    openssh-client \
+    ripgrep \
+    build-essential \
+    jq \
+    bc \
+    unzip \
+    zip \
+    && locale-gen en_US.UTF-8 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+# ---------------------------------------------------------------------------
+# 2. Node.js 22 LTS (via NodeSource) & package managers
+# ---------------------------------------------------------------------------
+# hadolint ignore=DL3008,DL3016
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g npm@latest yarn pnpm eslint prettier \
+    && node --version && npm --version
+
+# ---------------------------------------------------------------------------
+# 3. Python 3.12 + pip
+# ---------------------------------------------------------------------------
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && python3 --version && pip3 --version
+
+# ---------------------------------------------------------------------------
+# 4. Go (1.26.x)
+# ---------------------------------------------------------------------------
+ARG TARGETARCH
+ARG GO_VERSION="1.26.2"
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" \
+    -o /tmp/go.tar.gz \
+    && tar -C /usr/local -xzf /tmp/go.tar.gz \
+    && rm /tmp/go.tar.gz \
+    && /usr/local/go/bin/go version
+
+# ---------------------------------------------------------------------------
+# 5. Binaries from Builder (Jules, Localharness, AX Runner & CLI)
+# ---------------------------------------------------------------------------
+COPY --from=builder /go/bin/ax-task-runner /usr/local/bin/ax-task-runner
+COPY --from=builder /go/bin/ax /usr/local/bin/ax
+COPY --from=builder /go/bin/localharness /usr/local/bin/localharness
+COPY --from=builder /jules /usr/local/bin/jules
+
+# ---------------------------------------------------------------------------
+# 6. Scripts & Git Configuration
+# ---------------------------------------------------------------------------
+COPY scripts/ /opt/scripts/
+RUN chmod +x /opt/scripts/*.sh \
+    /usr/local/bin/ax-task-runner \
+    /usr/local/bin/ax \
+    /usr/local/bin/jules \
+    /usr/local/bin/localharness
+
+WORKDIR /workspace
+
+ENV PATH="/opt/scripts:/usr/local/go/bin:/usr/local/bin:/root/.local/bin:${PATH}" \
+    GIT_ASKPASS="/opt/scripts/git-askpass.sh"
+
+RUN git config --system --add safe.directory '*' \
+    && git config --system user.email "jules-ai-agent@divmora.com" \
+    && git config --system user.name "Jules AI Agent"
+
+# ax-task-runner serves as PID 1 to supervise execution and host metadata server
+ENTRYPOINT ["/usr/local/bin/ax-task-runner"]
+CMD ["jules", "--help"]

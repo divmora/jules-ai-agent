@@ -1,0 +1,24 @@
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: jules-sweeper-maintainability
+spec:
+  image: ghcr.io/divmora/jules-ai-agent-ax:latest
+  command:
+    - jules
+    - --agent
+    - sweeper
+    - --workspace
+    - /workspace
+    - --prompt
+    - "Clean up technical debt, remove dead code, and improve maintainability"
+  workspaces:
+    - name: target-workspace
+      path: /workspace
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "4"
+      memory: "8Gi"

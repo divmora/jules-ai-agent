@@ -1,0 +1,24 @@
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: jules-palette-a11y
+spec:
+  image: ghcr.io/divmora/jules-ai-agent-ax:latest
+  command:
+    - jules
+    - --agent
+    - palette
+    - --workspace
+    - /workspace
+    - --prompt
+    - "Audit the UI for WCAG 2.1 AA accessibility issues and apply fixes"
+  workspaces:
+    - name: target-workspace
+      path: /workspace
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "4"
+      memory: "8Gi"
