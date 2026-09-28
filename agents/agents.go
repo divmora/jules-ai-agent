@@ -30,7 +30,7 @@ func newBaseConfig(workspace string) *adk.LocalAgentConfig {
 	cfg := adk.NewLocalAgentConfig()
 	cfg.Workspaces = []adk.WorkspaceDef{{Directory: workspace}}
 	cfg.Policies = []policy.Policy{policy.AllowAll()}
-	cfg.Capabilities.RunCommand = true
+	cfg.Capabilities = adk.AllTools()
 
 	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.4.0)
 	resolver := &connection.BinaryResolver{
