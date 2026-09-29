@@ -31,6 +31,8 @@ func newBaseConfig(workspace string) *adk.LocalAgentConfig {
 	cfg.Workspaces = []adk.WorkspaceDef{{Directory: workspace}}
 	cfg.Policies = []policy.Policy{policy.AllowAll()}
 	cfg.Capabilities = adk.AllTools()
+	cfg.Trusted = true
+	cfg.YoloMode = true
 
 	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.4.0)
 	resolver := &connection.BinaryResolver{
@@ -46,9 +48,10 @@ func newBaseConfig(workspace string) *adk.LocalAgentConfig {
 	// a permission-denied loop. These are single-shot analysis agents that
 	// don't need the planning workflow.
 
-	// Allow one level of subagents for research/analysis delegation
-	cfg.MaxSubagentDepth = 1
-	cfg.MaxConcurrentSubagents = 3
+	// Single-shot analysis and optimization agents execute tools directly
+	cfg.MaxSubagentDepth = 0
+	cfg.MaxConcurrentSubagents = 0
+	cfg.InheritSubagentCapabilities = true
 
 	// Safety: cap autonomous background turns to prevent runaway loops
 	cfg.MaxAutoWakeTurns = 5
