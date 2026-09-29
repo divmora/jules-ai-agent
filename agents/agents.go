@@ -17,12 +17,11 @@ import (
 	"github.com/divmora/localharness/adk/policy"
 )
 
-const localharnessVersion = "0.4.0"
+const localharnessVersion = "0.5.0"
 
 // newBaseConfig returns a LocalAgentConfig with shared defaults for all agents.
 //
-// v0.4.0 enhancements:
-//   - MaxSubagentDepth=1: agents can spawn one level of research subagents
+// Enhancements:
 //   - MaxAutoWakeTurns=5: safety cap on autonomous turns
 //
 // NOTE: EnablePlanningMode is OFF — see comment in function body.
@@ -34,7 +33,7 @@ func newBaseConfig(workspace string) *adk.LocalAgentConfig {
 	cfg.Trusted = true
 	cfg.YoloMode = true
 
-	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.4.0)
+	// Resolve localharness binary (checks PATH, dev paths, cache, or auto-downloads v0.5.0)
 	resolver := &connection.BinaryResolver{
 		Version: localharnessVersion,
 	}
